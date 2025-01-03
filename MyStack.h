@@ -22,22 +22,28 @@ class MyStack {
 
 			Node<T>* p = _head;;
 			Node<T>* last = nullptr;
+			
+			try {
+				while (p != nullptr) {
+					Node<T>* new_node = new Node<T>;
+					new_node->data = p->data;
+					new_node->next = nullptr;
 
-			while (p != nullptr) {
-				Node<T>* new_node = new Node<T>;
-				new_node->data = p->data;
-				new_node->next = nullptr;
+					if (head == nullptr) {
+						head = new_node;
+					}
+					else {
+						last->next = new_node;
+					}
+					last = new_node;
+					size++;
 
-				if (head == nullptr) {
-					head = new_node;
+					p = p->next;
 				}
-				else {
-					last->next = new_node;
-				}
-				last = new_node;
-				size++;
-
-				p = p->next;
+			}
+			catch (...) {
+				free();
+				throw;
 			}
 		}
 		
@@ -78,13 +84,18 @@ class MyStack {
 		}
 
 		void push(T item) {
-			Node<T>* new_node = new Node<T>{item, head};
-			head = new_node;
-			size++;
+			try {
+				Node<T>* new_node = new Node<T>{item, head};
+				head = new_node;
+				size++;
+			}
+			catch (const std::bad_alloc& e) {
+				throw std::runtime_error("Bad alloc error while pushing!");
+			}
 		}
 
 		void pop() {
-			if (isEmpty()) return;
+			if (isEmpty()) throw std::runtime_error("Stack is empty!");
 			
 			Node<T>* temp = head;
 			head = head->next;
@@ -93,6 +104,11 @@ class MyStack {
 		}
 
 		T& peekTop() {
+			if (isEmpty()) throw std::runtime_error("Stack is empty!");
+			return head->data;
+		}
+
+		const T& peekTop() const {
 			if (isEmpty()) throw std::runtime_error("Stack is empty!");
 			return head->data;
 		}
@@ -139,11 +155,13 @@ class MyStack {
 					return curr_node != it.curr_node;
 				}
 
-				const T& operator*() const {
+				const T& operator*() const {	
+					if (!curr_node) throw std::out_of_range("Iterator is out of range!");
 					return curr_node->data;
 				}
 
 				T& operator*() {
+					if (!curr_node) throw std::out_of_range("Iterator is out of range!");
 					return curr_node->data;
 				}
 		};

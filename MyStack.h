@@ -59,6 +59,12 @@ class MyStack {
 			head = nullptr;
 		}
 
+		void ensureNotEmpty() const {
+			if (isEmpty()) { 
+				throw std::runtime_error("Stack is empty!");
+			}
+		}
+
 	public:
 
 		MyStack() {
@@ -95,8 +101,8 @@ class MyStack {
 		}
 
 		void pop() {
-			if (isEmpty()) throw std::runtime_error("Stack is empty!");
-			
+			ensureNotEmpty();	
+
 			Node<T>* temp = head;
 			head = head->next;
 			delete temp;
@@ -104,12 +110,12 @@ class MyStack {
 		}
 
 		T& peekTop() {
-			if (isEmpty()) throw std::runtime_error("Stack is empty!");
+			ensureNotEmpty();
 			return head->data;
 		}
 
 		const T& peekTop() const {
-			if (isEmpty()) throw std::runtime_error("Stack is empty!");
+			ensureNotEmpty();
 			return head->data;
 		}
 
